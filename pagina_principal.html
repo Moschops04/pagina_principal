@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Casa das Frutas</title>
+	<link rel="icon" href="./icon/melao.ico" type="image/x-icon">
+	<link rel="stylesheet" href="./css/estilo.css">
+</head>
+<body>
+
+<!-- Barra de Navegação -->
+<div class="navbar">
+    <img src="./img/logodacasa.png" alt="logo" class="logobar">
+    <div class="navbar-brand">Casa das Frutas</div><!-- Nome centralizado -->
+    
+    <!-- Novo menu suspenso para os links -->
+    <div class="dropdown">
+        <a href="#" class="dropdown-btn">Menu</a>
+        <div class="dropdown-content">
+            <!-- Links dentro do menu suspenso -->
+            <a href="#">Frutas</a>
+            <a href="https://pt.wikipedia.org/wiki/Lista_de_frutas" target="_blank">Lista de Frutas (Wikipédia)</a>
+            <a href="#loginModal" class="login-btn">Login</a>
+        </div>
+    </div>
+    
+    <span id="userNameDisplay" class="user-name"></span>
+</div>
+
+
+
+		<!-- Exibe o nome do usuário depois de logado -->
+		<span id="userNameDisplay" class="user-name"></span>
+		<!-- Botão de Login (Abre o Modal de Login) -->
+
+	</div>
+
+	<!-- Modal de Login e Registro -->
+	<div id="loginModal" class="login-modal">
+		<div class="modal-content">
+			<h2 id="modalTitle">Login</h2>
+			<input type="text" id="username" placeholder="Usuário" required>
+			<input type="password" id="password" placeholder="Senha" required>
+			<button onclick="login()">Entrar</button>
+			<p id="switchText">Não tem uma conta? <a href="#registerModal">Registrar-se</a></p>
+			<a href="#" class="close-modal">Fechar</a>
+		</div>
+	</div>
+
+	<!-- Modal de Registro -->
+	<div id="registerModal" class="login-modal">
+		<div class="modal-content">
+			<h2>Registrar-se</h2>
+			<input type="text" id="usernameRegister" placeholder="Usuário" required>
+			<input type="password" id="passwordRegister" placeholder="Senha" required>
+			<button onclick="register()">Registrar</button>
+			<p id="switchTextRegister">Já tem uma conta? <a href="#loginModal">Entrar</a></p>
+			<a href="#" class="close-modal">Fechar</a>
+		</div>
+	</div>
+
+	<!-- Função de Login e Registro -->
+	<script>
+		var users = []; // Armazenando usuários (em um caso real, isso seria feito em um banco de dados)
+		var currentUser = null; // Variável para armazenar o usuário logado
+
+		function login() {
+			var username = document.getElementById("username").value;
+			var password = document.getElementById("password").value;
+
+			// Verificar se o usuário existe
+			var user = users.find(u => u.username === username && u.password === password);
+
+			if (user) {
+				alert("Login bem-sucedido!");
+				currentUser = user;
+				updateNavbar(); // Atualizar a barra de navegação
+				window.location.href = "#";  // Redirecionar para a página inicial ou página desejada após o login
+			} else {
+				alert("Usuário ou senha incorretos.");
+			}
+		}
+
+		function register() {
+			var username = document.getElementById("usernameRegister").value;
+			var password = document.getElementById("passwordRegister").value;
+
+			// Verificar se o usuário já existe
+			if (users.find(u => u.username === username)) {
+				alert("Usuário já existe. Tente outro nome.");
+				return;
+			}
+
+			// Registrar novo usuário
+			users.push({ username: username, password: password });
+			alert("Cadastro bem-sucedido! Agora você pode fazer login.");
+			location.href = "#loginModal";  // Volta para a tela de login após o cadastro
+		}
+
+		function updateNavbar() {
+			// Exibe o nome do usuário
+			document.getElementById("userNameDisplay").textContent = currentUser.username;
+
+			// Oculta o botão de login
+			document.getElementById("loginBtn").style.display = 'none';
+		}
+	</script>
+<script>
+	var users = []; // Armazenando usuários (em um caso real, isso seria feito em um banco de dados)
+	var currentUser = null; // Variável para armazenar o usuário logado
+
+	// Verificar se há um usuário logado ao carregar a página
+	window.onload = function() {
+		var storedUser = localStorage.getItem('currentUser');
+		if (storedUser) {
+			currentUser = JSON.parse(storedUser);
+			updateNavbar(); // Atualizar a barra de navegação com o usuário logado
+		}
+	};
+
+	function login() {
+		var username = document.getElementById("username").value;
+		var password = document.getElementById("password").value;
+
+		// Verificar se o usuário existe
+		var user = users.find(u => u.username === username && u.password === password);
+
+		if (user) {
+			alert("Login bem-sucedido!");
+			currentUser = user;
+			localStorage.setItem('currentUser', JSON.stringify(user)); // Salvar o usuário no localStorage
+			updateNavbar(); // Atualizar a barra de navegação
+			window.location.href = "#";  // Redirecionar para a página inicial ou página desejada após o login
+		} else {
+			alert("Usuário ou senha incorretos.");
+		}
+	}
+
+	function register() {
+		var username = document.getElementById("usernameRegister").value;
+		var password = document.getElementById("passwordRegister").value;
+
+		// Verificar se o usuário já existe
+		if (users.find(u => u.username === username)) {
+			alert("Usuário já existe. Tente outro nome.");
+			return;
+		}
+
+		// Registrar novo usuário
+		users.push({ username: username, password: password });
+		alert("Cadastro bem-sucedido! Agora você pode fazer login.");
+		location.href = "#loginModal";  // Volta para a tela de login após o cadastro
+	}
+
+	function updateNavbar() {
+		// Exibe o nome do usuário
+		document.getElementById("userNameDisplay").textContent = currentUser.username;
+
+		// Oculta o botão de login
+		document.getElementById("loginBtn").style.display = 'none';
+	}
+
+	// Função de logout
+	function logout() {
+		localStorage.removeItem('currentUser'); // Remove o usuário logado do localStorage
+		currentUser = null;
+		document.getElementById("userNameDisplay").textContent = '';
+		document.getElementById("loginBtn").style.display = 'block';
+		alert("Você foi deslogado.");
+	}
+</script>
+
+	<!-- Título Principal -->
+	<div class="title">
+
+		<a>	
+				
+			<img src="./img/logodacasa.png" alt="logo" class="logo">
+
+		</a>	
+		<p>Casa das Frutas</p>
+
+		<h2>
+			Bem-vindo à Casa das Frutas, o lugar perfeito para descobrir tudo sobre o maravilhoso mundo das
+			frutas! Nosso site funciona como uma verdadeira Wikipedia de frutas, oferecendo informações
+			detalhadas sobre uma vasta variedade de frutas, desde as mais comuns até as mais exóticas. Aqui,
+			você encontra curiosidades, benefícios nutricionais, formas de consumo e dicas de cultivo. Se você é
+			apaixonado por frutas ou está simplesmente buscando aprender mais sobre elas, a Casa das Frutas é
+			o seu espaço ideal. Navegue e explore as maravilhas que a natureza nos oferece!
+		</h2>
+	</div>
+
+	<!-- Lista de Frutas -->
+	<div class="fruit-list">
+		<ul>
+			<li>	
+				<h3>Abacate</h3>
+				<a href="./abacates.html">
+					<img src="./img/images.jpg" alt="Imagem de um abacate">
+				</a>
+			</li>
+			<li>
+				<h3>Melão</h3>
+				<a href="./melao.html">
+					<img src="./img/melao.jpg" alt="Imagem de um melão">
+				</a>
+			</li>
+			<li>
+				<h3>Abacaxi</h3>
+				<a href="./abacaxi.html">
+					<img src="./img/abacaxi.jpg" alt="Imagem de um abacaxi">
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<!-- Tabela de Informações de Frutas -->
+	<div class="fruit-table">
+		<h5>Informações Nutricionais das Frutas</h5>
+		<table center="1">
+			<thead>
+				<tr>
+					<th>Fruta</th>
+					<th>Calorias (por 100g)</th>
+					<th>Vitaminas Principais</th>
+					<th>Benefícios</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Abacate</td>
+					<td>160 kcal</td>
+					<td>Vitamina E, Vitamina C</td>
+					<td>Fonte de gorduras saudáveis</td>
+				</tr>
+				<tr>
+					<td>Melão</td>
+					<td>34 kcal</td>
+					<td>Vitamina A, Vitamina C</td>
+					<td>Hidratação e saúde da pele</td>
+				</tr>
+				<tr>
+					<td>Abacaxi</td>
+					<td>50 kcal</td>
+					<td>Vitamina C, Manganês</td>
+					<td>Ajuda na digestão</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Rodapé -->
+	<footer>
+		&copy; 2025 Casa das Frutas. Desenvolvido por. <a href="#">Paulo</a>.
+	</footer>
+
+</body>
+</html>

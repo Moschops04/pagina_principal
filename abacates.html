@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Casa das Frutas</title>
+	<link rel="icon" href="./icon/melao.ico" type="image/x-icon">
+	<link rel="stylesheet" href="./css/abacate.css">
+</head>
+<body>
+
+<!-- Barra de Navegação -->
+<div class="navbar">
+    <img src="./img/logodacasa.png" alt="logo" class="logobar">
+    <div class="navbar-brand">Casa das Frutas</div><!-- Nome centralizado -->
+    
+    <!-- Novo menu suspenso para os links -->
+    <div class="dropdown">
+        <a href="#" class="dropdown-btn">Menu</a>
+        <div class="dropdown-content">
+            <!-- Links dentro do menu suspenso -->
+            <a href="#">Frutas</a>
+            <a href="https://pt.wikipedia.org/wiki/Lista_de_frutas" target="_blank">Lista de Frutas (Wikipédia)</a>
+            <a href="#loginModal" class="login-btn">Login</a>
+        </div>
+    </div>
+    
+    <!-- Exibe o nome do usuário depois de logado -->
+    <span id="userNameDisplay" class="user-name"></span>
+</div>
+
+
+
+
+		<span id="userNameDisplay" class="user-name"></span>
+
+
+	</div>
+
+	<!-- Modal de Login e Registro -->
+	<div id="loginModal" class="login-modal">
+		<div class="modal-content">
+			<h2 id="modalTitle">Login</h2>
+			<input type="text" id="username" placeholder="Usuário" required>
+			<input type="password" id="password" placeholder="Senha" required>
+			<button onclick="login()">Entrar</button>
+			<p id="switchText">Não tem uma conta? <a href="#registerModal">Registrar-se</a></p>
+			<a href="#" class="close-modal">Fechar</a>
+		</div>
+	</div>
+
+	<!-- Modal de Registro -->
+	<div id="registerModal" class="login-modal">
+		<div class="modal-content">
+			<h2>Registrar-se</h2>
+			<input type="text" id="usernameRegister" placeholder="Usuário" required>
+			<input type="password" id="passwordRegister" placeholder="Senha" required>
+			<button onclick="register()">Registrar</button>
+			<p id="switchTextRegister">Já tem uma conta? <a href="#loginModal">Entrar</a></p>
+			<a href="#" class="close-modal">Fechar</a>
+		</div>
+	</div>
+
+	<!-- Função de Login e Registro -->
+	<script>
+		var users = []; // Armazenando usuários (em um caso real, isso seria feito em um banco de dados)
+		var currentUser = null; // Variável para armazenar o usuário logado
+
+		function login() {
+			var username = document.getElementById("username").value;
+			var password = document.getElementById("password").value;
+
+			// Verificar se o usuário existe
+			var user = users.find(u => u.username === username && u.password === password);
+
+			if (user) {
+				alert("Login bem-sucedido!");
+				currentUser = user;
+				updateNavbar(); // Atualizar a barra de navegação
+				window.location.href = "#";  // Redirecionar para a página inicial ou página desejada após o login
+			} else {
+				alert("Usuário ou senha incorretos.");
+			}
+		}
+
+		function register() {
+			var username = document.getElementById("usernameRegister").value;
+			var password = document.getElementById("passwordRegister").value;
+
+			// Verificar se o usuário já existe
+			if (users.find(u => u.username === username)) {
+				alert("Usuário já existe. Tente outro nome.");
+				return;
+			}
+
+			// Registrar novo usuário
+			users.push({ username: username, password: password });
+			alert("Cadastro bem-sucedido! Agora você pode fazer login.");
+			location.href = "#loginModal";  // Volta para a tela de login após o cadastro
+		}
+
+		function updateNavbar() {
+			// Exibe o nome do usuário
+			document.getElementById("userNameDisplay").textContent = currentUser.username;
+
+			// Oculta o botão de login
+			document.getElementById("loginBtn").style.display = 'none';
+		}
+	</script>
+<script>
+	var users = []; // Armazenando usuários (em um caso real, isso seria feito em um banco de dados)
+	var currentUser = null; // Variável para armazenar o usuário logado
+
+	// Verificar se há um usuário logado ao carregar a página
+	window.onload = function() {
+		var storedUser = localStorage.getItem('currentUser');
+		if (storedUser) {
+			currentUser = JSON.parse(storedUser);
+			updateNavbar(); // Atualizar a barra de navegação com o usuário logado
+		}
+	};
+
+	function login() {
+		var username = document.getElementById("username").value;
+		var password = document.getElementById("password").value;
+
+		// Verificar se o usuário existe
+		var user = users.find(u => u.username === username && u.password === password);
+
+		if (user) {
+			alert("Login bem-sucedido!");
+			currentUser = user;
+			localStorage.setItem('currentUser', JSON.stringify(user)); // Salvar o usuário no localStorage
+			updateNavbar(); // Atualizar a barra de navegação
+			window.location.href = "#";  // Redirecionar para a página inicial ou página desejada após o login
+		} else {
+			alert("Usuário ou senha incorretos.");
+		}
+	}
+
+	function register() {
+		var username = document.getElementById("usernameRegister").value;
+		var password = document.getElementById("passwordRegister").value;
+
+		// Verificar se o usuário já existe
+		if (users.find(u => u.username === username)) {
+			alert("Usuário já existe. Tente outro nome.");
+			return;
+		}
+
+		// Registrar novo usuário
+		users.push({ username: username, password: password });
+		alert("Cadastro bem-sucedido! Agora você pode fazer login.");
+		location.href = "#loginModal";  // Volta para a tela de login após o cadastro
+	}
+
+	function updateNavbar() {
+		// Exibe o nome do usuário
+		document.getElementById("userNameDisplay").textContent = currentUser.username;
+
+		// Oculta o botão de login
+		document.getElementById("loginBtn").style.display = 'none';
+	}
+
+	// Função de logout
+	function logout() {
+		localStorage.removeItem('currentUser'); // Remove o usuário logado do localStorage
+		currentUser = null;
+		document.getElementById("userNameDisplay").textContent = '';
+		document.getElementById("loginBtn").style.display = 'block';
+		alert("Você foi deslogado.");
+	}
+</script>
+
+<body>
+    <div class="title">
+        <h1>Casa das Frutas - Abacate</h1>
+    </div>
+
+    <div class="text-box">
+        <h3>O abacate é uma fruta conhecida por sua textura cremosa e sabor suave, bastante apreciada tanto em pratos doces quanto salgados. Originário da América Central e do Sul, ele pertence à família Lauraceae e cresce em árvores chamadas de abacateiros, que podem atingir alturas consideráveis.</h3>
+        <p>Aqui estão alguns aspectos interessantes sobre o abacate:</p>
+        <ul>
+            <li><strong>Rico em gorduras boas:</strong> O abacate é famoso por ser rico em gorduras monoinsaturadas, especialmente o ácido oleico, que também é encontrado no azeite de oliva. Essas gorduras ajudam a melhorar o perfil lipídico do corpo, beneficiando a saúde do coração.</li>
+            <li><strong>Alto valor nutricional:</strong> Ele contém uma boa quantidade de vitaminas, como as vitaminas C, E, K e várias do complexo B, incluindo o folato. Também é uma boa fonte de minerais como potássio e magnésio.</li>
+            <li><strong>Benefícios para a saúde:</strong> Além de ser saudável para o coração, o abacate também contribui para a saúde da pele, auxilia na absorção de nutrientes lipossolúveis e pode ajudar no controle do colesterol e na redução da inflamação.</li>
+            <li><strong>Uso na culinária:</strong> Versátil, o abacate pode ser usado em várias preparações. No Brasil, é comum consumi-lo com açúcar ou em vitamina, mas em outros países, como o México, é um ingrediente base para pratos salgados, como o famoso guacamole.</li>
+            <li><strong>Calorias e saciedade:</strong> Embora seja mais calórico que outras frutas, o abacate também proporciona maior saciedade, o que pode ajudar a reduzir a ingestão de alimentos em outras refeições.</li>
+        </ul>
+        <p>É uma fruta que, quando consumida com moderação, pode ser uma excelente adição à dieta.</p>
+    </div>
+
+    <div class="image-container">
+        <img src="./img/images.jpg" alt="Imagem de um abacate">
+        <img src="./img/abacate2.jpg" alt="Imagem de outro abacate">
+    </div>
+	<footer>
+		&copy; 2025 Casa das Frutas. Desenvolvido por. <a href="#">Paulo</a>.
+	</footer>
+</body>
+</html>
